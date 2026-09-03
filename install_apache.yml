@@ -1,11 +1,10 @@
 ---
-
-
 - hosts: all
   become: yes
+
   tasks:
-  
-  - name: install apache2 package
-    apt:
+    - name: Install apache2 package 
+      apt:
         name: apache2
         state: present
+      when: ansible_distribution == "Ubuntu"  ## condition 
