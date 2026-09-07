@@ -13,6 +13,7 @@
   
   tasks: 
      - name: Install apache in Ubuntu Server
+       tags: apache
        apt:
          name: apache2
          state: latest
