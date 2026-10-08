@@ -1,0 +1,58 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: Update Packages
+      apt:
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"  ## condition 
+    
+- hosts: dev
+  become: true
+  
+  tasks: 
+     - name: Install apache in Ubuntu Server
+       tags: apache
+       apt:
+         name: apache2
+         state: latest
+       when: ansible_distribution == "Ubuntu"
+
+     - name:  copy default file html file for site
+       tags: apache,apache2,httpd
+       copy:
+         src: default_site.html
+         dest: /var/www/html/index.html
+         owner: root
+         group: root
+         mode: 0644
+     
+- hosts: workstation
+  become: true
+    
+  tasks:
+
+     - name: install unzip
+       apt:
+         name: unzip
+     
+     - name: install terraform 
+       unarchive:
+          src: https://releases.hashicorp.com/terraform/1.16.2/terraform_1.16.2_linux_amd64.zip
+          dest: /usr/local/bin
+          remote_src: yes
+          mode: 0755
+          owner: root
+          group: root
+
+- hosts: all
+  become: true
+
+  tasks:
+
+     - name:  add user Seimon
+       tags: always 
+       user:
+        name: seimon
+        groups: root
